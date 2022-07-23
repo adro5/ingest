@@ -1,0 +1,8 @@
+/home/adamrobinson/dev/ingest/poller/src/main/java/poller/provider/LocalFileProvider.java
+/home/adamrobinson/dev/ingest/poller/src/main/java/poller/provider/visitors/MoveFileVisitor.java
+/home/adamrobinson/dev/ingest/poller/src/main/java/poller/config/PollerConfig.java
+/home/adamrobinson/dev/ingest/poller/src/main/java/poller/ServerVerticle.java
+/home/adamrobinson/dev/ingest/poller/src/main/java/poller/Poller.java
+/home/adamrobinson/dev/ingest/poller/src/main/java/poller/config/PollerOptions.java
+/home/adamrobinson/dev/ingest/poller/src/main/java/poller/provider/visitors/CopyFileVisitor.java
+/home/adamrobinson/dev/ingest/poller/src/main/java/poller/provider/FileProvider.java
