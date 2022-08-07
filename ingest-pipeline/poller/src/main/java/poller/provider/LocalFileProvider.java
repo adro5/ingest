@@ -1,5 +1,6 @@
 package poller.provider;
 
+import poller.collector.AbstractCollector;
 import poller.config.PollerConfig;
 import io.vertx.core.AbstractVerticle;
 import org.apache.logging.log4j.LogManager;
@@ -9,14 +10,20 @@ import poller.provider.visitors.MoveFileVisitor;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class LocalFileProvider extends AbstractVerticle implements FileProvider {
 
     private final PollerConfig pollerConfig;
+    private AbstractCollector<Path> collector;
     private static final Logger logger = LogManager.getLogger(LocalFileProvider.class);
 
     public LocalFileProvider(PollerConfig config) {
         this.pollerConfig = config;
+    }
+    public LocalFileProvider(PollerConfig config, AbstractCollector<Path> collector) {
+        this.pollerConfig = config;
+        this.collector = collector;
     }
 
     @Override

@@ -1,8 +1,0 @@
-# Absolute file paths need to be used
-srcDirectory: "file:///home/adamrobinson/dev/ingest/poller/src/main/resources/testSrc/"
-destDirectory:  "file:///home/adamrobinson/dev/ingest/poller/src/main/resources/testDest/"
-batchSize:  1
-#rate in milliseconds
-pollRate: 10000
-portNumber: 8888
-copyOnWrite:  true
