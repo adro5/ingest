@@ -2,6 +2,9 @@ package poller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import poller.collector.AbstractCollector;
+import poller.collector.HDFSCollector;
+import poller.collector.S3Collector;
 import poller.config.PollerConfig;
 import poller.config.PollerOptions;
 import io.vertx.core.AbstractVerticle;
@@ -12,14 +15,20 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import poller.provider.FileProvider;
+import poller.provider.HDFSFileProvider;
 import poller.provider.LocalFileProvider;
+import poller.provider.S3FileProvider;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Poller extends AbstractVerticle {
     private PollerConfig config;
     private static final Logger log = LogManager.getLogger(Poller.class);
+    private AbstractCollector<Path> collector;
+    private FileProvider provider;
 
     protected void configure(String[] args) {
         PollerOptions options = new PollerOptions();
@@ -63,18 +72,42 @@ public class Poller extends AbstractVerticle {
 
         Thread.sleep(1000);
 
-        // Deploying a periodic verticle to handle file polling
-        vertx.setPeriodic(config.getPollRate(), handler -> {
-            if (config.getSrcURIScheme().equals("file") && config.getDestURIScheme().equals("file")) {
-                LocalFileProvider localFileProvider = new LocalFileProvider(config);
-                localFileProvider.move();
-            }
-        });
+        // Deploying periodic verticles to handle file collecting
+        // We can condense this code down once LFP gets a Collector
+        // Eventually we will be to do other things besides Remote -> Local or Local -> Local transfers
+        if (config.getSrcURIScheme().equals("hdfs")) {
+            collector = new HDFSCollector<>(Path::compareTo, config);
+            vertx.setPeriodic(config.getPollRate(), handler -> {
+                collector.collect();
+            });
+            provider = new LocalFileProvider(config, collector);
+            vertx.setPeriodic(config.getPollRate(), handler -> {
+                provider.move();
+            });
+        } else if (config.getSrcURIScheme().equals("s3")) {
+            collector = new S3Collector<>(Path::compareTo, config);
+            vertx.setPeriodic(config.getPollRate(), handler -> {
+                collector.collect();
+            });
+            provider = new LocalFileProvider(config, collector);
+            vertx.setPeriodic(config.getPollRate(), handler -> {
+                provider.move();
+            });
+        } else if (config.getSrcURIScheme().equals("file") && config.getDestURIScheme().equals("file")) {
+            // Deploying a periodic verticle to handle file providing
+            vertx.setPeriodic(config.getPollRate(), handler -> {
+                if (config.getDestURIScheme().equals("file")) {
+                    LocalFileProvider localFileProvider = new LocalFileProvider(config);
+                    localFileProvider.move();
+                }
+            });
+        }
 
         // Check to see if we have a request to shut down
         EventBus eb = vertx.eventBus();
         eb.consumer("shutdownRequest", shutdownMessage -> {
             if (shutdownMessage.body().toString().equals("shutdown")) {
+                log.info("Shutting down");
                 vertx.undeploy(webDeployID.get());
                 vertx.close();
             }

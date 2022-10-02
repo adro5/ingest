@@ -25,15 +25,15 @@ public class PollerTest {
         this.testConfig = mapper.readValue(new File("src/main/resources/test-config.yaml"), PollerConfig.class);
 
         assertEquals(1,testConfig.getBatchSize());
-        assertEquals("file:///home/adamrobinson/dev/ingest/poller/src/main/resources/testSrc/",testConfig.getSrcDirectory());
-        assertEquals("file:///home/adamrobinson/dev/ingest/poller/src/main/resources/testDest/",testConfig.getDestDirectory());
+        assertEquals("file:///home/adamrobinson/dev/nlip/ingest-pipeline/poller/src/main/resources/testSrc/",testConfig.getSrcDirectory());
+        assertEquals("file:///home/adamrobinson/dev/nlip/ingest-pipeline/poller/src/main/resources/testDest/",testConfig.getDestDirectory());
         assertEquals(8888, testConfig.getPortNumber());
         assertTrue(testConfig.isCopyOnWrite());
 
         StringBuilder builder = new StringBuilder();
         builder.append("\n-----Poller Configuration-----\n");
-        builder.append("Source Directory: file:///home/adamrobinson/dev/ingest/poller/src/main/resources/testSrc/\n");
-        builder.append("Destination Directory: file:///home/adamrobinson/dev/ingest/poller/src/main/resources/testDest/\n");
+        builder.append("Source Directory: file:///home/adamrobinson/dev/nlip/ingest-pipeline/poller/src/main/resources/testSrc/\n");
+        builder.append("Destination Directory: file:///home/adamrobinson/dev/nlip/ingest-pipeline/poller/src/main/resources/testDest/\n");
         builder.append("Batch size: " + 1 + "\n");
         builder.append("Poll rate: " + 10000 + "\n");
         builder.append("Copy On Write: " + true + "\n");

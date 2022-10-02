@@ -1,0 +1,9 @@
+# Absolute file paths need to be used
+srcDirectory: "file:///home/adamrobinson/dev/nlip/ingest-pipeline/poller/src/main/resources/testSrc/"
+destDirectory:  "file:///home/adamrobinson/dev/nlip/ingest-pipeline/poller/src/main/resources/testDest/"
+# Has no effect in local file system moves/copies
+batchSize:  1
+#rate in milliseconds
+pollRate: 10000
+portNumber: 8888
+copyOnWrite:  true

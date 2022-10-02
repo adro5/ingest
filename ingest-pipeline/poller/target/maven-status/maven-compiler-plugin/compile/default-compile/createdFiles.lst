@@ -1,8 +1,0 @@
-poller/provider/visitors/MoveFileVisitor.class
-poller/provider/FileProvider.class
-poller/config/PollerConfig.class
-poller/provider/visitors/CopyFileVisitor.class
-poller/Poller.class
-poller/provider/LocalFileProvider.class
-poller/ServerVerticle.class
-poller/config/PollerOptions.class
